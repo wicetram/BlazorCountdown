@@ -1,0 +1,68 @@
+﻿@page "/"
+@layout ComingSoonLayout
+@using System.Timers;
+<PageTitle>Coming Soon</PageTitle>
+
+<div class="backgroundImage">
+    <div class="content">
+        <p>Website is under maintance</p>
+        <h1>We are launching soon</h1>
+        <div class="lunch-timer">
+            <div>
+                <p>@days</p>
+                <span>Days</span>
+            </div>
+            <div>
+                <p>@hours</p>
+                <span>Hours</span>
+            </div><div>
+                <p>@minutes</p>
+                <span>Minutes</span>
+            </div><div>
+                <p>@seconds</p>
+                <span>Seconds</span>
+            </div>
+        </div>
+        <button type="button">Learn More</button>
+    </div>
+    <img src="/Images/rocket.png" class="rocket" />
+</div>
+
+@code {
+    private Timer timer = new(1000);
+    private int days, hours, minutes, seconds;
+
+    private DateTime comingSoonDate;
+
+    protected override async Task OnInitializedAsync()
+    {
+        comingSoonDate = new DateTime(2023, 09, 09);
+        timer.Elapsed += (sender, EventArgs) => CountDown();
+        timer.Start();
+        await base.OnInitializedAsync();
+    }
+
+    private void CountDown()
+    {
+        var distance = comingSoonDate - DateTime.Now;
+        days = distance.Days;
+        hours = distance.Hours;
+        minutes = distance.Minutes;
+        seconds = distance.Seconds;
+
+        if (days <= 0 && hours <= 0 && minutes <= 0 && seconds <= 0)
+        {
+            days = 0;
+            hours = 0;
+            minutes = 0;
+            seconds = 0;
+            timer.Stop();
+        }
+
+        // Use InvokeAsync to update UI components on the main thread
+        InvokeAsync(() =>
+        {
+            StateHasChanged();
+        });
+    }
+}
